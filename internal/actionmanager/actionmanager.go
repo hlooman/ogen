@@ -141,6 +141,7 @@ func (l *lastActionManager) StartValidator(valPub [48]byte, sign func(*primitive
 	if err != nil {
 		return false
 	}
+
 	return true
 }
 

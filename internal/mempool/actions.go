@@ -185,12 +185,14 @@ func (am *actionMempool) handleDeposit(id peer.ID, msg p2p.Message) error {
 	if id == am.host.GetHost().ID() {
 		return nil
 	}
-	// TODO relay and filter already received objects.
+
 	data, ok := msg.(*p2p.MsgDeposit)
 	if !ok {
 		return errors.New("wrong message on deposit topic")
 	}
+
 	s := am.chain.State().TipState()
+
 	err := am.AddDeposit(data.Data, s)
 	if err != nil {
 		return err
@@ -203,18 +205,21 @@ func (am *actionMempool) handleDeposits(id peer.ID, msg p2p.Message) error {
 	if id == am.host.GetHost().ID() {
 		return nil
 	}
-	// TODO relay and filter already received objects.
+
 	data, ok := msg.(*p2p.MsgDeposits)
 	if !ok {
 		return errors.New("wrong message on deposits topic")
 	}
+
 	s := am.chain.State().TipState()
+
 	for _, d := range data.Data {
 		err := am.AddDeposit(d, s)
 		if err != nil {
 			return err
 		}
 	}
+
 	return nil
 }
 

@@ -72,12 +72,14 @@ func (m *voteMempool) Add(vote *primitives.MultiValidatorVote) {
 		m.log.Error(err)
 	}
 
+	committee, _ := currentState.GetVoteCommittee(vote.Data.Slot)
+
 	// Register voting action for validators included on the vote
-	//for i, c := range committee {
-	//if vote.ParticipationBitfield.Get(uint(i)) {
-	//m.lastActionManager.RegisterAction(currentState.GetValidatorRegistry()[c].PubKey, vote.Data.Nonce)
-	//}
-	//}
+	for i, c := range committee {
+		if vote.ParticipationBitfield.Get(uint(i)) {
+			m.lastActionManager.RegisterAction(currentState.GetValidatorRegistry()[c].PubKey, vote.Data.Nonce)
+		}
+	}
 
 	// Slashing check
 	// This check iterates over all the votes on the pool.

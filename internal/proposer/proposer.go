@@ -178,10 +178,10 @@ func (p *proposer) ProposeBlocks() {
 
 			if k, found := p.keystore.GetValidatorKey(proposer.PubKey); found {
 
-				//if !p.lastActionManager.ShouldRun(proposer.PubKey) {
-				//	blockTimer = time.NewTimer(time.Until(p.getNextBlockTime(slotToPropose)))
-				//	continue
-				//}
+				if !p.lastActionManager.ShouldRun(proposer.PubKey) {
+					blockTimer = time.NewTimer(time.Until(p.getNextBlockTime(slotToPropose)))
+					continue
+				}
 
 				p.log.Infof("proposing for slot %d", slotToPropose)
 
@@ -391,14 +391,14 @@ func (p *proposer) VoteForBlocks() {
 				if !found {
 					continue
 				}
-				//signFunc := func(message *primitives.ValidatorHelloMessage) *bls.Signature {
-				//	msg := message.SignatureMessage()
-				//	return key.Sign(msg)
-				//}
-				//if p.lastActionManager.StartValidator(votingValidator.PubKey, signFunc) {
-				signatures = append(signatures, key.Sign(dataHash[:]))
-				bitlistVotes.Set(uint(i))
-				//}
+				signFunc := func(message *primitives.ValidatorHelloMessage) *bls.Signature {
+					msg := message.SignatureMessage()
+					return key.Sign(msg)
+				}
+				if p.lastActionManager.StartValidator(votingValidator.PubKey, signFunc) {
+					signatures = append(signatures, key.Sign(dataHash[:]))
+					bitlistVotes.Set(uint(i))
+				}
 			}
 
 			if len(signatures) > 0 {

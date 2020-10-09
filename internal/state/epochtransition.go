@@ -185,8 +185,7 @@ func (s *state) NextVoteEpoch(newState uint64) {
 	s.VotingState = newState
 }
 
-// CheckForVoteTransitions tallies up votes and checks for any governance
-// state transitions.
+// CheckForVoteTransitions tallies up votes and checks for any governance state transitions.
 func (s *state) CheckForVoteTransitions() {
 	netParams := config.GlobalParams.NetParams
 
